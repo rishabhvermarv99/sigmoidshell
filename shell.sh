@@ -30,7 +30,6 @@ function validate_input() {
     return 0
 }
 
-# Get the input from the user
 echo "Enter the component name:"
 read component_name
 
@@ -48,7 +47,7 @@ if ! validate_input $component_name $scale $view $count; then
     exit 1
 fi
 
-# Replace the values in the file
+
 sed -i "s/vdopiasample/$view/g" sig.conf
 sed -i "s/vdopiasample-bid/$view-bid/g" sig.conf
 sed -i "s/MID/$scale/g" sig.conf
