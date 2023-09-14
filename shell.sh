@@ -30,16 +30,17 @@ function validate_input() {
     return 0
 }
 
-echo "Enter the component name:"
+# Get the input from the user
+echo "Enter the component name- INGESTOR/JOINER/WRANGLER/VALIDATOR: "
 read component_name
 
-echo "Enter the scale:"
+echo "Enter the scale- MID/HIGH/LOW: "
 read scale
 
-echo "Enter the view:"
+echo "Enter the view- Auction/Bid: "
 read view
 
-echo "Enter the count:"
+echo "Enter the count (Single digit): "
 read count
 
 # Validate the input
@@ -48,11 +49,14 @@ if ! validate_input $component_name $scale $view $count; then
 fi
 
 
-sed -i "s/vdopiasample/$view/g" sig.conf
-sed -i "s/vdopiasample-bid/$view-bid/g" sig.conf
-sed -i "s/MID/$scale/g" sig.conf
-sed -i "s/LOW/$count/g" sig.conf
-sed -i "s/HIGH/$count/g" sig.conf
+if [[ "$view" == "Auction" ]]; then
+    conf_line="$view ; $scale ; $component_name ; ETL ; vdopiasample= $count"
+elif [[ "$view" == "Bid" ]]; then
+    conf_line="$view ; $scale ; $component_name ; ETL ; vdopiasample-bid= $count"
+fi
 
-# Print the updated file
+# Update the data to sig.conf
+sed -i "/$view/d" sig.conf
+echo "$conf_line" >> sig.conf
+
 cat sig.conf
